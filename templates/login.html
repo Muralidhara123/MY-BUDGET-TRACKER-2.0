@@ -1,0 +1,151 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Login</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <style>
+        .theme-toggle-fixed {
+            position: absolute;
+            top: 20px;
+            right: 20px;
+            background: rgba(124, 58, 237, 0.1);
+            border: none;
+            width: 40px;
+            height: 40px;
+            border-radius: 12px;
+            color: var(--accent-primary);
+            font-size: 1.2rem;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        body.dark-mode .theme-toggle-fixed {
+            background: rgba(255, 255, 255, 0.1);
+            color: white;
+        }
+    </style>
+</head>
+
+<body class="auth-body">
+
+    <button class="theme-toggle-fixed" id="theme-btn">
+        <i class="fas fa-moon"></i>
+    </button>
+
+    <div class="container auth-container">
+        <div class="auth-card">
+            <div class="auth-icon">
+                <i class="fas fa-wallet" style="font-size: 2rem;"></i>
+            </div>
+
+            <h1 style="margin-bottom: 10px; color: var(--text-primary);">Welcome Back</h1>
+            <p style="color: var(--text-secondary); margin-bottom: 30px;">Manage your expenses smart & easy.</p>
+
+            <form id="login-form">
+                <input type="text" id="l-username" placeholder="Username" required>
+                <input type="password" id="l-password" placeholder="Password" required>
+                <button type="submit" class="btn" style="margin-top: 10px;">Login</button>
+            </form>
+
+            <p style="margin-top: 20px; font-size: 0.9rem; color: var(--text-secondary);">
+                New here? <a href="#" id="toggle-auth"
+                    style="color: var(--accent-primary); font-weight: 600; text-decoration: none;">Create Account</a>
+            </p>
+
+            <div id="message" style="margin-top: 15px; font-size: 0.9rem; min-height: 20px;"></div>
+        </div>
+    </div>
+
+    <script>
+        const API_URL = '/api';
+        const loginForm = document.getElementById('login-form');
+        const messageDiv = document.getElementById('message');
+        const toggleLink = document.getElementById('toggle-auth');
+        const themeBtn = document.getElementById('theme-btn');
+        let isLogin = true;
+
+        // Theme Logic
+        const themeIcon = themeBtn.querySelector('i');
+        function setTheme(isDark) {
+            if (isDark) {
+                document.body.classList.add('dark-mode');
+                themeIcon.classList.remove('fa-moon');
+                themeIcon.classList.add('fa-sun');
+                localStorage.setItem('theme', 'dark');
+            } else {
+                document.body.classList.remove('dark-mode');
+                themeIcon.classList.remove('fa-sun');
+                themeIcon.classList.add('fa-moon');
+                localStorage.setItem('theme', 'light');
+            }
+        }
+        // Init Theme
+        const savedTheme = localStorage.getItem('theme');
+        if (savedTheme === 'dark') setTheme(true);
+
+        themeBtn.addEventListener('click', () => {
+            const isDark = document.body.classList.contains('dark-mode');
+            setTheme(!isDark);
+        });
+
+        // Auth Logic
+        toggleLink.addEventListener('click', (e) => {
+            e.preventDefault();
+            isLogin = !isLogin;
+            const btn = loginForm.querySelector('button');
+            const title = document.querySelector('h1');
+
+            if (isLogin) {
+                btn.innerText = 'Login';
+                title.innerText = 'Welcome Back';
+                toggleLink.innerText = 'Create Account';
+            } else {
+                btn.innerText = 'Register';
+                title.innerText = 'Create Account';
+                toggleLink.innerText = 'Back to Login';
+            }
+            messageDiv.innerText = '';
+        });
+
+        loginForm.addEventListener('submit', async (e) => {
+            e.preventDefault();
+            const username = document.getElementById('l-username').value;
+            const password = document.getElementById('l-password').value;
+            const endpoint = isLogin ? '/login' : '/register';
+
+            try {
+                const res = await fetch(API_URL + endpoint, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ username, password })
+                });
+                const data = await res.json();
+
+                if (res.ok) {
+                    if (isLogin) {
+                        window.location.href = '/dashboard';
+                    } else {
+                        messageDiv.style.color = 'var(--success)';
+                        messageDiv.innerText = 'Registration successful! Please login.';
+                        toggleLink.click();
+                    }
+                } else {
+                    messageDiv.style.color = 'var(--danger)';
+                    messageDiv.innerText = data.error || 'An error occurred';
+                }
+            } catch (err) {
+                console.error(err);
+                messageDiv.innerText = 'Connection error';
+            }
+        });
+    </script>
+</body>
+
+</html>

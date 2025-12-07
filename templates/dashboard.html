@@ -1,0 +1,263 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>My Budget Tracker 2.0</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+</head>
+
+<body>
+    <div class="container">
+        <!-- Header -->
+        <header class="app-header">
+            <div style="display: flex; align-items: center; gap: 10px;">
+                <h3 style="font-size: 1.2rem; margin: 0; text-transform: uppercase;">MY BUDGET TRACKER 2.0</h3>
+            </div>
+            <button class="icon-btn" id="theme-btn">
+                <i class="fas fa-moon"></i>
+            </button>
+        </header>
+
+        <!-- HOME VIEW -->
+        <div id="view-home" class="view-section active">
+
+            <h1 style="margin-bottom: 20px;">Hello, {{ username }}!</h1>
+
+            <!-- New Overview Card -->
+            <div class="balance-card">
+                <h2>
+                    <span>Overview</span>
+                    <span>Full Report <i class="fas fa-chevron-right" style="font-size: 0.7rem;"></i></span>
+                </h2>
+
+                <div class="overview-row">
+                    <span>Inflow</span>
+                    <span id="stats-income">₹0.00</span>
+                </div>
+                <div class="overview-row">
+                    <span>Outflow</span>
+                    <span id="stats-expense">₹0.00</span>
+                </div>
+
+                <div class="overview-total" id="total-balance">
+                    ₹0.00
+                </div>
+                <div style="position: absolute; right: 20px; bottom: 20px; opacity: 0.2; font-size: 3rem;">
+                    <i class="fas fa-money-bill-wave"></i>
+                </div>
+            </div>
+            <!-- 17 October / Today Header Style -->
+            <div class="section-header"
+                style="margin-top: 30px; border-bottom: 1px solid #e5e7eb; padding-bottom: 10px; margin-bottom: 15px;">
+                <h3 style="font-weight: 400; font-size: 1.1rem;">17 October</h3>
+                <span style="color: var(--text-secondary); font-size: 0.9rem;">Today</span>
+            </div>
+
+            <!-- Transactions Header -->
+            <div class="section-header" style="margin-top: 20px;">
+                <h3>Transactions</h3>
+                <a href="#" class="see-all">See All</a>
+            </div>
+
+            <!-- Transaction List -->
+            <div class="transaction-list" id="tx-list">
+                <!-- Items injected via JS -->
+                <p style="text-align: center; color: var(--text-secondary); padding: 20px;">Loading...</p>
+            </div>
+        </div>
+
+        <!-- STATS VIEW -->
+        <div id="view-stats" class="view-section">
+            <h2 style="margin-bottom: 20px;">Expenses</h2>
+
+            <!-- Calendar Strip -->
+            <div class="calendar-strip">
+                <div class="cal-item active">
+                    <span>14</span>
+                    <small>Mon</small>
+                </div>
+                <div class="cal-item">
+                    <span>15</span>
+                    <small>Tue</small>
+                </div>
+                <div class="cal-item">
+                    <span>16</span>
+                    <small>Wed</small>
+                </div>
+                <div class="cal-item">
+                    <span>17</span>
+                    <small>Thu</small>
+                </div>
+                <div class="cal-item">
+                    <span>18</span>
+                    <small>Fri</small>
+                </div>
+            </div>
+
+            <!-- Income/Expense Cards -->
+            <div class="stats-cards-row">
+                <div class="stat-card income">
+                    <div class="icon-box"><i class="fas fa-arrow-down"></i></div>
+                    <span class="label">Total Income</span>
+                    <h3 id="stats-income">$0.00</h3>
+                    <div class="mini-chip">**** 2548</div>
+                </div>
+                <div class="stat-card expense">
+                    <div class="icon-box"><i class="fas fa-arrow-up"></i></div>
+                    <span class="label">Total Expense</span>
+                    <h3 id="stats-expense">$0.00</h3>
+                    <div class="mini-chip">**** 2548</div>
+                </div>
+            </div>
+
+            <!-- Chart Section -->
+            <div
+                style="margin-top: 25px; background: white; padding: 20px; border-radius: 24px; box-shadow: var(--shadow-sm);">
+                <h3 style="margin-bottom: 15px; font-size: 1rem;">Spending Breakdown</h3>
+                <div style="height: 220px; position: relative;">
+                    <canvas id="expenseChart"></canvas>
+                </div>
+            </div>
+
+            <div class="section-header" style="margin-top: 25px;">
+                <h3>Expenses</h3>
+                <a href="#" class="see-all">View All</a>
+            </div>
+            <!-- Re-use transaction list container, JS will populate both if we give them unique IDs or shared class. 
+                  For simplicity, let's create a secondary list container here for the stats view. -->
+            <div class="transaction-list" id="tx-list-stats">
+                <!-- Populated by JS -->
+            </div>
+        </div>
+
+        <!-- WALLET VIEW (Placeholder) -->
+        <div id="view-wallet" class="view-section">
+            <h2 style="margin-bottom: 20px;">My Wallet</h2>
+            <div class="balance-card">
+                <div style="display: flex; justify-content: space-between; margin-bottom: 30px;">
+                    <i class="fas fa-wifi" style="transform: rotate(90deg);"></i>
+                    <i class="fab fa-cc-visa" style="font-size: 2rem;"></i>
+                </div>
+                <p style="font-family: monospace; font-size: 1.2rem; letter-spacing: 2px;">**** **** **** 4242</p>
+                <div style="display: flex; justify-content: space-between; margin-top: 20px;">
+                    <div>
+                        <p style="font-size: 0.7rem; opacity: 0.7;">CARD HOLDER</p>
+                        <p style="font-size: 0.9rem;">{{ username|upper }}</p>
+                    </div>
+                    <div>
+                        <p style="font-size: 0.7rem; opacity: 0.7;">EXPIRES</p>
+                        <p style="font-size: 0.9rem;">12/28</p>
+                    </div>
+                </div>
+            </div>
+            <p style="margin-top: 20px; text-align: center; color: var(--text-secondary);">Manage Cards & Accounts</p>
+        </div>
+
+        <!-- PROFILE VIEW -->
+        <div id="view-profile" class="view-section">
+            <div class="profile-card">
+                <div class="profile-avatar">
+                    <i class="fas fa-user"></i>
+                </div>
+                <h2 style="margin-bottom: 5px;">{{ username }}</h2>
+                <p style="color: var(--text-secondary); margin-bottom: 25px;">Premium Member</p>
+
+                <div style="text-align: left; display: flex; flex-direction: column; gap: 10px;">
+                    <button class="profile-menu-btn">
+                        <i class="fas fa-cog"></i> Settings
+                    </button>
+                    <button class="profile-menu-btn">
+                        <i class="fas fa-bell"></i> Notifications
+                    </button>
+                    <!-- Move Reset Here -->
+                    <button id="reset-btn-profile" class="profile-menu-btn danger">
+                        <i class="fas fa-trash-alt"></i> Reset All Data
+                    </button>
+
+                    <button id="logout-btn-profile" class="profile-menu-btn" style="margin-top: 20px;">
+                        <i class="fas fa-sign-out-alt"></i> Logout
+                    </button>
+                </div>
+            </div>
+        </div>
+
+        <!-- Spacer for FAB -->
+        <div style="height: 80px;"></div>
+    </div>
+
+    <!-- Bottom Navigation -->
+    <div class="bottom-nav">
+        <i class="fas fa-home nav-item active" id="nav-home"></i>
+        <i class="fas fa-chart-bar nav-item" id="nav-stats"></i>
+        <div class="fab" id="fab-add">
+            <i class="fas fa-plus"></i>
+        </div>
+        <i class="fas fa-wallet nav-item" id="nav-wallet"></i>
+        <i class="fas fa-user nav-item" id="nav-profile"></i>
+    </div>
+
+    <!-- Add Transaction Modal -->
+    <div id="add-modal" class="modal-overlay">
+        <div class="modal-content">
+            <div style="text-align: right;">
+                <button id="close-add"
+                    style="background:none; border:none; font-size:1.2rem; color: #9ca3af; cursor: pointer;">&times;</button>
+            </div>
+            <h2 style="margin-bottom: 20px;">Add Transaction</h2>
+
+            <div style="display: flex; background: #f3f4f6; padding: 4px; border-radius: 12px; margin-bottom: 20px;">
+                <button class="btn tab-btn active" data-type="expense"
+                    style="flex: 1; padding: 10px; border-radius: 8px; color: var(--text-primary); background: white; box-shadow: var(--shadow-sm);">Expense</button>
+                <button class="btn tab-btn" data-type="income"
+                    style="flex: 1; padding: 10px; border-radius: 8px; background: transparent; color: var(--text-secondary);">Income</button>
+            </div>
+
+            <form id="transaction-form">
+                <div class="form-group">
+                    <input type="text" id="t-desc" placeholder="Title (e.g. Uber, Netflix)" required>
+                </div>
+                <div class="form-group">
+                    <input type="number" id="t-amount" placeholder="Amount" step="0.01" required>
+                </div>
+                <button type="submit" class="btn">Add Now</button>
+            </form>
+        </div>
+    </div>
+
+    <!-- Initial Setup Modal -->
+    <div id="setup-modal" class="modal-overlay">
+        <div class="modal-content">
+            <i class="fas fa-coins" style="font-size: 3rem; color: var(--accent-primary); margin-bottom: 15px;"></i>
+            <h2 style="margin-bottom: 10px;">Welcome!</h2>
+            <p style="color: var(--text-secondary); margin-bottom: 20px;">Enter your current balance to start.</p>
+            <form id="setup-form">
+                <input type="number" id="initial-amount" placeholder="e.g. 5000" step="0.01" required
+                    style="text-align: center; font-size: 1.2rem;">
+                <button type="submit" class="btn">Start</button>
+            </form>
+        </div>
+    </div>
+
+    <!-- Reset Modal -->
+    <div id="reset-modal" class="modal-overlay">
+        <div class="modal-content">
+            <i class="fas fa-exclamation-circle"
+                style="font-size: 3rem; color: var(--danger); margin-bottom: 15px;"></i>
+            <h2 style="margin-bottom: 10px;">Reset All Data?</h2>
+            <p style="color: var(--text-secondary); margin-bottom: 20px;">This cannot be undone.</p>
+            <div style="display: flex; gap: 10px;">
+                <button id="cancel-reset" class="btn btn-secondary">Cancel</button>
+                <button id="confirm-reset" class="btn" style="background: var(--danger);">Reset</button>
+            </div>
+        </div>
+    </div>
+
+    <script src="{{ url_for('static', filename='script.js') }}"></script>
+</body>
+
+</html>

@@ -1,0 +1,834 @@
+:root {
+    --bg-color: #f3f4f6;
+    --card-bg: #ffffff;
+    --text-primary: #1f2937;
+    --text-secondary: #6b7280;
+
+    /* Reference Palette */
+    --primary-green: #4ade80;
+    /* Vibrant Green */
+    --primary-navy: #1e1b4b;
+    /* Dark Navy */
+    --accent-red: #ef4444;
+    /* Alert Red */
+    --accent-yellow: #facc15;
+    /* Coin Yellow */
+
+    --font-main: 'Inter', sans-serif;
+    --nav-height: 70px;
+    --shadow-sm: 0 4px 6px -1px rgba(0, 0, 0, 0.05);
+    --shadow-md: 0 10px 15px -3px rgba(0, 0, 0, 0.05);
+}
+
+* {
+    box-sizing: border-box;
+    margin: 0;
+    padding: 0;
+}
+
+body {
+    background-color: var(--bg-color);
+    color: var(--text-primary);
+    font-family: var(--font-main);
+    display: flex;
+    justify-content: center;
+    min-height: 100vh;
+    padding-bottom: var(--nav-height);
+    /* Space for nav */
+}
+
+/* Mobile-Ready Container */
+.container {
+    width: 100%;
+    max-width: 480px;
+    /* Limits width on desktop default (mobile-first) */
+    padding: 20px;
+    display: flex;
+    flex-direction: column;
+    gap: 20px;
+    margin: 0 auto;
+    /* Center on desktop */
+    padding-bottom: calc(var(--nav-height) + 20px);
+    /* Space for scrolling above nav */
+}
+
+/* On actual mobile devices, take full width */
+@media (max-width: 480px) {
+    .container {
+        padding: 15px;
+        max-width: 100%;
+    }
+}
+
+
+
+/* Typography */
+h1,
+h2,
+h3 {
+    font-weight: 700;
+}
+
+/* Header */
+.app-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 10px 0;
+}
+
+.icon-btn {
+    background: white;
+    border: none;
+    width: 40px;
+    height: 40px;
+    border-radius: 12px;
+    color: var(--text-primary);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    cursor: pointer;
+    box-shadow: var(--shadow-sm);
+}
+
+/* User Avatar */
+.user-avatar-small {
+    width: 40px;
+    height: 40px;
+    border-radius: 12px;
+    background: #e0e7ff;
+    color: var(--accent-primary);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    font-size: 1.2rem;
+}
+
+/* Glass Credit Card */
+.balance-card {
+    background: rgba(30, 30, 45, 0.7);
+    backdrop-filter: blur(20px);
+    -webkit-backdrop-filter: blur(20px);
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    border-radius: 28px;
+    padding: 30px;
+    color: white;
+    box-shadow: 0 20px 40px -10px rgba(0, 0, 0, 0.4);
+    position: relative;
+    overflow: hidden;
+    margin-bottom: 10px;
+    transition: transform 0.3s ease, box-shadow 0.3s ease;
+}
+
+/* Holographic Shine */
+.balance-card::before {
+    content: '';
+    position: absolute;
+    top: -50%;
+    left: -50%;
+    width: 200%;
+    height: 200%;
+    background: linear-gradient(45deg,
+            transparent 45%,
+            rgba(255, 255, 255, 0.1) 50%,
+            transparent 55%);
+    animation: hologram 6s infinite linear;
+    pointer-events: none;
+    transform: rotate(25deg);
+}
+
+@keyframes hologram {
+    0% {
+        transform: translateY(100%) rotate(25deg);
+    }
+
+    100% {
+        transform: translateY(-100%) rotate(25deg);
+    }
+}
+
+.balance-card::after {
+    content: '';
+    position: absolute;
+    bottom: -30px;
+    right: -30px;
+    width: 150px;
+    height: 150px;
+    background: radial-gradient(circle, rgba(255, 114, 53, 0.2) 0%, transparent 70%);
+    opacity: 0.8;
+    pointer-events: none;
+}
+
+/* Analytics Chart Preview */
+/* Analytics Chart Preview */
+.chart-preview-container {
+    height: 200px;
+    background: white;
+    border-radius: 24px;
+    padding: 20px;
+    box-shadow: var(--shadow-sm);
+    position: relative;
+    overflow: hidden;
+}
+
+/* Dark mode adjustment for chart container */
+body.dark-mode .chart-preview-container {
+    background: var(--card-bg);
+}
+
+.bar-col {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 8px;
+    flex: 1;
+}
+
+.bar {
+    width: 12px;
+    background: #f3f4f6;
+    border-radius: 20px;
+    transition: all 0.3s;
+}
+
+.bar.active {
+    background: var(--accent-primary);
+    box-shadow: 0 4px 10px rgba(124, 58, 237, 0.3);
+}
+
+.day {
+    font-size: 0.75rem;
+    color: var(--text-secondary);
+}
+
+.btn-mini-orange {
+    background: var(--accent-orange);
+    color: white;
+    border: none;
+    padding: 8px 15px;
+    border-radius: 10px;
+    font-size: 0.8rem;
+    font-weight: 600;
+    cursor: pointer;
+    box-shadow: 0 4px 10px rgba(255, 114, 53, 0.3);
+}
+
+/* Calendar Strip */
+.calendar-strip {
+    display: flex;
+    justify-content: space-between;
+    margin-bottom: 25px;
+    gap: 10px;
+}
+
+.cal-item {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    background: white;
+    padding: 15px 5px;
+    border-radius: 18px;
+    border: 1px solid #f3f4f6;
+    cursor: pointer;
+    transition: all 0.2s;
+}
+
+.cal-item span {
+    font-weight: 700;
+    font-size: 1.1rem;
+    margin-bottom: 4px;
+}
+
+.cal-item small {
+    color: var(--text-secondary);
+    font-size: 0.8rem;
+}
+
+.cal-item.active {
+    background: var(--accent-orange);
+    color: white;
+    border-color: var(--accent-orange);
+    box-shadow: 0 8px 15px rgba(255, 114, 53, 0.3);
+}
+
+.cal-item.active small {
+    color: rgba(255, 255, 255, 0.9);
+}
+
+/* Stats Cards */
+.stats-cards-row {
+    display: flex;
+    gap: 15px;
+}
+
+.stat-card {
+    flex: 1;
+    padding: 20px;
+    border-radius: 24px;
+    color: white;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    height: 160px;
+    position: relative;
+    overflow: hidden;
+}
+
+.stat-card.income {
+    background: var(--accent-primary);
+    box-shadow: 0 10px 20px rgba(124, 58, 237, 0.3);
+}
+
+.stat-card.expense {
+    background: var(--accent-orange);
+    box-shadow: 0 10px 20px rgba(255, 114, 53, 0.3);
+}
+
+.stat-card .icon-box {
+    width: 35px;
+    height: 35px;
+    background: rgba(255, 255, 255, 0.2);
+    border-radius: 10px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 1rem;
+    margin-bottom: 15px;
+}
+
+.stat-card .label {
+    font-size: 0.9rem;
+    opacity: 0.9;
+    margin-bottom: 5px;
+}
+
+.stat-card h3 {
+    font-size: 1.5rem;
+    margin-bottom: 10px;
+}
+
+.stat-card .mini-chip {
+    font-size: 0.7rem;
+    opacity: 0.6;
+    letter-spacing: 1px;
+}
+
+/* Sections */
+.section-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 15px;
+}
+
+.see-all {
+    color: var(--accent-primary);
+    font-size: 0.9rem;
+    font-weight: 600;
+    text-decoration: none;
+}
+
+/* Transaction List Matching Mockup */
+.transaction-list {
+    display: flex;
+    flex-direction: column;
+    gap: 0;
+    /* Remove gap for clean list look */
+}
+
+.transaction-item {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    background: transparent;
+    /* No card bg */
+    padding: 15px 0;
+    border-bottom: 1px solid #f3f4f6;
+    border-radius: 0;
+    box-shadow: none;
+    animation: fadeInUp 0.4s ease forwards;
+}
+
+.t-icon {
+    width: 40px;
+    height: 40px;
+    border-radius: 50%;
+    background: transparent;
+    /* Icon only or yellow bg */
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    font-size: 1.2rem;
+    color: var(--accent-yellow);
+    /* Yellow Icons */
+    margin-right: 15px;
+}
+
+/* Bottom Nav */
+/* Floating Glass Dock */
+.bottom-nav {
+    position: fixed;
+    bottom: 20px;
+    left: 50%;
+    transform: translateX(-50%);
+    width: 90%;
+    max-width: 400px;
+    height: 70px;
+    background: rgba(255, 255, 255, 0.85);
+    backdrop-filter: blur(16px);
+    -webkit-backdrop-filter: blur(16px);
+    border-radius: 24px;
+    display: flex;
+    justify-content: space-between;
+    /* Space out items */
+    align-items: center;
+    padding: 0 25px;
+    /* Add padding to bring outer icons in */
+    box-shadow: 0 10px 40px rgba(0, 0, 0, 0.1);
+    z-index: 900;
+    border: 1px solid rgba(255, 255, 255, 0.4);
+    transition: all 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+}
+
+.bottom-nav:hover {
+    transform: translateX(-50%) translateY(-2px);
+    box-shadow: 0 15px 50px rgba(0, 0, 0, 0.15);
+}
+
+@media (max-width: 480px) {
+    .bottom-nav {
+        width: 92%;
+        bottom: 15px;
+    }
+}
+
+.nav-item {
+    color: var(--text-secondary);
+    font-size: 1.5rem;
+    cursor: pointer;
+    transition: color 0.2s;
+}
+
+.nav-item.active {
+    color: var(--accent-primary);
+}
+
+/* Modern Backgrounds */
+body {
+    background-color: var(--bg-color);
+    color: var(--text-primary);
+    font-family: var(--font-main);
+    display: flex;
+    justify-content: center;
+    min-height: 100vh;
+    padding-bottom: var(--nav-height);
+}
+
+body.dark-mode {
+    background-color: #0f172a;
+    --card-bg: #1e293b;
+    --text-primary: #f8fafc;
+}
+
+/* Animations */
+@keyframes fadeInUp {
+    from {
+        opacity: 0;
+        transform: translateY(20px);
+    }
+
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+.transaction-item {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    background: var(--card-bg);
+    padding: 15px;
+    border-radius: 16px;
+    box-shadow: var(--shadow-sm);
+    animation: fadeInUp 0.4s ease forwards;
+    transition: transform 0.2s, box-shadow 0.2s;
+    opacity: 0;
+    /* Hidden initially for staggered anim */
+}
+
+.transaction-item:hover {
+    transform: translateY(-2px);
+    box-shadow: var(--shadow-md);
+}
+
+.delete-btn {
+    background: none;
+    border: none;
+    color: var(--text-secondary);
+    cursor: pointer;
+    padding: 8px;
+    border-radius: 8px;
+    transition: all 0.2s;
+    opacity: 0.5;
+}
+
+.delete-btn:hover {
+    background: #fee2e2;
+    color: var(--danger);
+    opacity: 1;
+}
+
+/* Overview Card (Green) */
+.balance-card {
+    background: var(--primary-green);
+    border-radius: 20px;
+    padding: 25px;
+    color: white;
+    box-shadow: 0 10px 25px -5px rgba(74, 222, 128, 0.4);
+    position: relative;
+    overflow: hidden;
+    margin-bottom: 20px;
+    animation: fadeInUp 0.5s ease;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+}
+
+.balance-card h2 {
+    font-size: 1.2rem;
+    font-weight: 500;
+    margin-bottom: 20px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.balance-card h2 span:last-child {
+    font-size: 0.8rem;
+    opacity: 0.8;
+}
+
+.overview-row {
+    display: flex;
+    justify-content: space-between;
+    margin-bottom: 8px;
+    font-size: 0.95rem;
+}
+
+.overview-total {
+    margin-top: 15px;
+    font-size: 1.8rem;
+    font-weight: 700;
+    text-align: right;
+    border-top: 1px solid rgba(255, 255, 255, 0.2);
+    padding-top: 10px;
+}
+
+/* FAB Shine Effect */
+.fab {
+    width: 65px;
+    height: 65px;
+    background: var(--accent-orange);
+    border-radius: 50%;
+    color: white;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    font-size: 1.8rem;
+    position: absolute;
+    top: -30px;
+    left: 50%;
+    transform: translateX(-50%);
+    box-shadow: 0 10px 15px -3px rgba(124, 58, 237, 0.5);
+    cursor: pointer;
+    border: 6px solid var(--bg-color);
+    z-index: 10;
+    transition: all 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+}
+
+.fab:active {
+    transform: translateX(-50%) scale(0.9);
+}
+
+.fab:hover {
+    box-shadow: 0 15px 20px -3px rgba(124, 58, 237, 0.6);
+}
+
+/* Components */
+/* Components */
+.btn {
+    background: linear-gradient(135deg, var(--accent-primary) 0%, #6d28d9 100%);
+    color: white;
+    border: none;
+    padding: 16px;
+    border-radius: 18px;
+    font-weight: 600;
+    width: 100%;
+    cursor: pointer;
+    box-shadow: 0 4px 12px rgba(124, 58, 237, 0.3);
+    transition: transform 0.2s, box-shadow 0.2s;
+}
+
+.btn:active {
+    transform: scale(0.98);
+}
+
+.btn:hover {
+    box-shadow: 0 6px 16px rgba(124, 58, 237, 0.4);
+    transform: translateY(-1px);
+}
+
+.btn-secondary {
+    background: transparent;
+    border: 1px solid #e5e7eb;
+    color: var(--text-secondary);
+}
+
+input {
+    width: 100%;
+    padding: 15px;
+    background: #f9fafb;
+    border: 1px solid #e5e7eb;
+    border-radius: 12px;
+    color: var(--text-primary);
+    margin-bottom: 10px;
+}
+
+input::placeholder {
+    color: #9ca3af;
+}
+
+body.dark-mode input::placeholder {
+    color: #6b7280;
+}
+
+/* Modals */
+.modal-overlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: rgba(0, 0, 0, 0.6);
+    backdrop-filter: blur(4px);
+    z-index: 1000;
+    align-items: center;
+    /* Center by default (desktop) */
+    display: none;
+}
+
+.modal-content {
+    background: white;
+    width: 90%;
+    max-width: 400px;
+    padding: 25px;
+    border-radius: 24px;
+    text-align: center;
+    animation: slideUp 0.3s ease;
+    position: relative;
+    /* Desktop: Floating card */
+    margin: auto;
+}
+
+/* Mobile Bottom Sheet Modal */
+@media (max-width: 480px) {
+    .modal-overlay {
+        align-items: flex-end;
+        /* Align to bottom */
+    }
+
+    .modal-content {
+        width: 100%;
+        max-width: 100%;
+        border-radius: 24px 24px 0 0;
+        /* Top corners rounded only */
+        margin: 0;
+        padding-bottom: 40px;
+        /* Extra padding for safe area */
+        animation: slideUpMobile 0.3s cubic-bezier(0.165, 0.84, 0.44, 1);
+    }
+}
+
+@keyframes slideUpMobile {
+    from {
+        transform: translateY(100%);
+    }
+
+    to {
+        transform: translateY(0);
+    }
+}
+
+@keyframes slideUp {
+    from {
+        transform: translateY(100%);
+        opacity: 0;
+    }
+
+    to {
+        transform: translateY(0);
+        opacity: 1;
+    }
+}
+
+.modal-overlay.active {
+    display: flex;
+}
+
+/* Helpers */
+.text-gradient {
+    color: inherit;
+}
+
+/* Reset from old style */
+.money-in {
+    color: var(--success);
+}
+
+.money-out {
+    color: var(--danger);
+}
+
+/* View Switching */
+.view-section {
+    display: none;
+    animation: fadeIn 0.3s ease;
+}
+
+.view-section.active {
+    display: block;
+}
+
+@keyframes fadeIn {
+    from {
+        opacity: 0;
+    }
+
+    to {
+        opacity: 1;
+    }
+}
+
+/* Profile View */
+.profile-card {
+    background: white;
+    padding: 30px;
+    border-radius: 24px;
+    text-align: center;
+    box-shadow: var(--shadow-sm);
+}
+
+.profile-menu-btn {
+    display: flex;
+    justify-content: flex-start;
+    align-items: center;
+    gap: 15px;
+    border: none;
+    background: #f9fafb;
+    padding: 15px;
+    border-radius: 16px;
+    color: var(--text-primary);
+    width: 100%;
+    cursor: pointer;
+    font-weight: 500;
+    transition: background 0.2s;
+}
+
+.profile-menu-btn:hover {
+    background: #e5e7eb;
+}
+
+.profile-menu-btn.danger {
+    background: #fee2e2;
+    color: var(--danger);
+}
+
+.profile-menu-btn.danger:hover {
+    background: #fecaca;
+}
+
+body.dark-mode .profile-menu-btn {
+    background: #374151;
+    color: var(--text-primary);
+}
+
+body.dark-mode .profile-menu-btn:hover {
+    background: #4b5563;
+}
+
+body.dark-mode .profile-menu-btn.danger {
+    background: rgba(239, 68, 68, 0.2);
+    color: #fca5a5;
+}
+
+body.dark-mode .profile-menu-btn.danger:hover {
+    background: rgba(239, 68, 68, 0.3);
+}
+
+.profile-avatar {
+    width: 100px;
+    height: 100px;
+    background: #e0e7ff;
+    color: var(--accent-primary);
+    border-radius: 50%;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    font-size: 3rem;
+
+    margin: 0 auto 20px;
+}
+
+/* Auth Page */
+.auth-card {
+    background: white;
+    padding: 40px 30px;
+    border-radius: 24px;
+    box-shadow: var(--shadow-lg);
+    text-align: center;
+    width: 100%;
+}
+
+body.dark-mode .auth-card {
+    background: var(--card-bg);
+}
+
+.auth-icon {
+    width: 80px;
+    height: 80px;
+    background: var(--bg-color);
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin: 0 auto 20px;
+    color: var(--accent-primary);
+}
+
+body.dark-mode .auth-icon {
+    background: #374151;
+}
+
+/* Auth Specifics */
+.auth-body {
+    align-items: center;
+    /* Center card vertically */
+}
+
+.auth-container {
+    padding-bottom: 20px !important;
+    /* No nav bar here */
+    width: 100%;
+    max-width: 420px;
+}
+
+/* Mobile Auth adjustments */
+@media (max-width: 480px) {
+    .auth-body {
+        align-items: flex-start;
+        /* Allow scrolling on small screens/keyboard open */
+        padding-top: 40px;
+    }
+}
